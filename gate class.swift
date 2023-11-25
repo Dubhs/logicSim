@@ -12,9 +12,25 @@ class Gate
 	var outBuff: Bool = false
 	var cnct: Gate?
 
-	func operate(a: Bool, b: Bool) -> Bool 
+	func operate() -> Void
 	{
 		fatalError("Override this method")
+	}
+	
+	func outputToNext() -> Void
+	{
+		if let connectedGate = self.cnct {
+			print(
+				"Connected to: " + "\(connectedGate.name)")
+			print(connectedGate.input)
+			connectedGate.input.append(
+				self.outBuff
+			)
+			print(connectedGate.input)
+		} else {
+			print(
+				"No connection for " + "\(self.name)")
+		}
 	}
 }
 
@@ -29,12 +45,19 @@ class OR: Gate
 		"_\(Gate.allGates.count + 1)")
 	}
 
-	override func operate
-	(a: Bool, b: Bool) -> Bool 
+	override func operate() -> Void
 	{
-		return a || b
+		if self.input.count > 1
+		{
+			self.outBuff = 
+				self.input[0] ||
+				self.input[1]
+		} else {
+			print("fuck")
+		}
 	}
 }
+
 
 class AND: Gate 
 {
@@ -47,60 +70,60 @@ class AND: Gate
 		"_\(Gate.allGates.count + 1)")
 	}
 
-	override func operate
-	(a: Bool, b: Bool) -> Bool 
-	{
-		return a && b
+	override func operate() {
+		if self.input.count > 1 {
+			self.outBuff = 
+				self.input[0] && 
+				self.input[1]
+		} else {
+			print("fuck")
+		}
 	}
 }
 
 func cnct(gateArray: [Gate], inputs: [Int], out: Int) {
 	for index in inputs {
-		gate[index].cnct = gate[out]
+		gateArray[index].cnct =
+		gateArray[out]
 	}
 }
 
-// Example Usage
-let gates = [AND(), AND(), OR()]
-cnct(gateArray: gates, inputs: [0, 1], out: 2)
+func Initialize() -> Void
+{
+	let gates = [AND(), AND(), OR()]
+
+	cnct(
+		gateArray: gates, 
+		inputs: [0, 1], out: 2)
 
 // Setting inputs and outputs
-gates[0].input
-	.append(contentsOf: [true, true])
-gates[1].input
-	.append(contentsOf: [true, false])
+	gates[0].input
+		.append(contentsOf: [true, true])
+	gates[1].input
+		.append(contentsOf: [true, false])
 
-print(gates[0].input)
-print("•-•------•")
-for gate in Gate.allGates {
-	// Check if there are enough inputs
-	if gate.input.count >= 2
-	{
-		gate.outBuff = gate.operate(
-		a: gate.input[0], b: gate.input[1])
-		print(
-		"gateName: \(gate.name)" +
-		" | result: \(gate.outBuff)")
-	} else {
-		print(
-		"Insufficient inputs for" +
-		"\(gate.name)")
-	}
-
-	if let connectedGate = gate.cnct
-	{
-		print(
-			"Connected to: " +
-			"\(connectedGate.name)")
-		print(connectedGate.input)
-		connectedGate.input.append(
-			gate.outBuff
-		)
-		print(connectedGate.input)
-	} else {
-		print(
-			"No connection for " +
-			"\(gate.name)")
-	}
-	print("•-•------•")
+	print(gates[0].input)
 }
+
+func Main() -> Void
+{
+	print("•-•------•")
+	for gate in Gate.allGates {
+	// Check if there are enough inputs
+		gate.operate()
+		print(
+		"gateName: \(gate.name)" + 
+		" | result: \(gate.outBuff)")
+
+		gate.outputToNext()
+		print("•-•------•")
+	}
+}
+// setup test gates
+Initialize()
+// iterate logic and print results
+Main()
+
+
+
+
